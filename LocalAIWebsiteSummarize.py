@@ -43,13 +43,12 @@ def messages_for(website):
 
 def summarize(url):
     website = Website(url)
-    response = ollama.chat(model=MODEL, messages = messages_for(website))
-    return response['message']['content']
+    response = ollama.chat(model=MODEL, messages = messages_for(website), stream=True)
+    for chunk in response:
+        print(chunk['message']['content'] or ' ', end=' ',flush=True)
+
+    # print(response['message']['content'])
 
 
-def display_summary(url):
-    summary = summarize(url)
-    print(summary)
-    display(Markdown(summary))
 
-display_summary("https://edwarddonner.com")
+summarize("https://edwarddonner.com")
