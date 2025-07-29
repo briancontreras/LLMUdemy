@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 from IPython.display import Markdown, display
 import ollama
+from rich.markdown import Markdown
+from rich.console import Console
 
 #basic header titles
 headers = {
@@ -44,11 +46,13 @@ def messages_for(website):
 def summarize(url):
     website = Website(url)
     response = ollama.chat(model=MODEL, messages = messages_for(website), stream=True)
+    val = ""
     for chunk in response:
         print(chunk['message']['content'] or ' ', end=' ',flush=True)
+        val += chunk['message']['content'] or ' '
+    return val
 
-    # print(response['message']['content'])
 
 
 
-summarize("https://edwarddonner.com")
+print(Markdown(summarize("https://edwarddonner.com")))
